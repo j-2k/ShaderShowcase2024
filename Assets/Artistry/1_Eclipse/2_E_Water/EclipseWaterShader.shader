@@ -96,7 +96,7 @@ Shader "Unlit/EclipseWaterShader"
                 float depthFade = 1 - saturate(depthDifference/_DepthFadeDist);
 
                 //return float4(lerp(_ColorTop,_ColorBot,depthFade).xyz,depthFade);
-                float3 viewVectorWorldSpace = -1 * (_WorldSpaceCameraPos.xyz - i.worldPos);
+                float3 viewVectorWorldSpace = -1 * (_WorldSpaceCameraPos.xyz - i.worldPos);//CARE WE DIDNT NORMALIZE!!!
                 //float3 viewVectorViewSpace = normalize(UnityWorldSpaceViewDir(vertexWorldPos));
                 
                 float3 vvws = (viewVectorWorldSpace/i.screenPos.w) * depthFromEyeLinear;
