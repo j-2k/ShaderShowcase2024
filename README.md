@@ -54,7 +54,7 @@ float depthFade = 1 - saturate(depthDifference/_DepthFadeDist);
 ```hlsl
 //IN FRAG SHADER:
 //(I converted it to shader code, since im on BIRP, hope its correct lmfao (seems to be atleast...😳))
-float3 viewVectorWorldSpace = -1 * (_WorldSpaceCameraPos.xyz - i.worldPos);
+float3 viewVectorWorldSpace = -1 * (_WorldSpaceCameraPos.xyz - i.worldPos); //CARE THIS IS NOT NORMALIZED!!!
 //float3 viewVectorViewSpace = normalize(UnityWorldSpaceViewDir(vertexWorldPos));
 
 float3 vvws = (viewVectorWorldSpace/i.screenPos.w) * depthFromEyeLinear;
