@@ -12,17 +12,17 @@ I'll try to make this readme less messy this time since the last shadershowcase'
 
 This is the end of the readme the only thing below is my personal notes & cheatsheet where I post code that is commonly duplicated & used in many shader scripts mainly for myself but could be useful to you also!
 
-## My Notes & Cheatsheet you can skip this!
-#### Credits & Learning AT THE VERY BOTTOM!
+# My Notes & Cheatsheet you can skip this!
+### Credits & Learning resources at the end!
 I will try commenting the code below in each section to help me understand what's going on for each section of the cheatsheet! Should be useful when revising certain topics & mainly just learning & understanding for myself.
-
-Get world position of the mesh's verticies!
+---
+### Get world position of the mesh's verticies!
 ```hlsl
 //in vert shader:
 o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 ```
 ---
-UV Spherical Unwrapping!
+### UV Spherical Unwrapping!
 ```hlsl
 //in vert shader:
 o.worldPos = mul(unity_ObjectToWorld,v.vertex);
@@ -33,8 +33,8 @@ float arcSineY = asin(worldPos.y)/(PI/2); //PI/2;
 float arcTan2X = atan2(worldPos.x,worldPos.z)/TAU;
 float2 skyUV = float2(arcTan2X,arcSineY);
 ```
-
-Water Depth View Dependent!
+---
+### *DEPENDENT VIEW* Water Depth!
 ```hlsl
 //Get Linear Depth Value
 float depth01 = tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos)).r;
@@ -45,8 +45,8 @@ float depthFromEyeLinear = LinearEyeDepth(depth01);
 float depthDifference = depthFromEyeLinear - i.screenPos.w;
 float depthFade = 1 - saturate(depthDifference/_DepthFadeDist);
 ```
-
-INDEPENDENT VIEW Water Depth!  
+---
+### *INDEPENDENT VIEW* Water Depth!  
 ```hlsl
 //(I converted it to shader code, since im on BIRP, hope its correct lmfao (seems to be atleast...😳))
 
@@ -62,8 +62,8 @@ worldWaterSurfaceToBottomDepth = saturate(exp(worldWaterSurfaceToBottomDepth/_De
 
 return worldWaterSurfaceToBottomDepth;
 ```
-
-#### Credits & Resources used to help me ❤️💚💙
+---
+### Credits & Resources used to help me ❤️💚💙
 - https://catlikecoding.com/ literally the holy fucking bible for unity shaders period
 - https://roystan.net/articles/toon-water/ Roy helped a ton during university <3 
 - https://ameye.dev/notes/stylized-water-shader/ Amazing stylized water blog
