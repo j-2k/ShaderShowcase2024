@@ -1,13 +1,35 @@
 Shader "Unlit/EclipseWaterShader"
 {
+    //Effects that need to be considered this is just a basis
+    //Light Direction
+    //Reflection
+    //Refraction
+    //Fresnel Effect
+    //Wave Pattern
+    //Water Depth
+    //Specular Highlights
+    //Foam
+    //Distance Fog
+    //===Extras?===
+    //Shadow Receiving / NOT Casting!
+    //Simple Shallow Underwater effects (NOT underwater camera!)
+    //Underwater Caustics!!! (THIS IS A VERY NICE IDEA, I read about caustics & forgot about them, AI reminded me here lol)
+
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _ColorTop("Surface Color", Color) = (0.501, 0.827, 0.968,1)//Surface light blue water(0.501, 0.827, 0.968,1)
+        _ColorBot("Deep Color", Color) = (0.031, 0.101, 0.349,1)//Deep dark blue water(0.031, 0.101, 0.349,1)
+        _DepthFadeDist("Depth Fade Distance", Range(0.001, 10)) = 0.5
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Opaque" "Queue"="Transparent"}
         LOD 100
+        ZTest LEqual
+        ZWrite On
+        Cull Back
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -30,16 +52,26 @@ Shader "Unlit/EclipseWaterShader"
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
+                float4 screenPos : TEXCOORD2;
+                float3 viewDir : TEXCOORD3;
             };
+
+            sampler2D _CameraDepthTexture;
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _ColorTop;
+            float4 _ColorBot;
+            float _DepthFadeDist;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+
+                o.screenPos = ComputeScreenPos(o.vertex);
+                o.viewDir = WorldSpaceViewDir(v.vertex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -50,7 +82,18 @@ Shader "Unlit/EclipseWaterShader"
                 fixed4 col = tex2D(_MainTex, i.uv);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                //return col;
+
+                //Get Linear Depth Value
+                float depth01 = tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos)).r;
+                //Same > float depth01 = tex2D(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPosition.xy / i.screenPosition.w)).r;
+                float depthFromEyeLinear = LinearEyeDepth(depth01);
+
+                float depthDifference = depthFromEyeLinear - i.screenPos.w;
+                float depthFade = saturate(depthDifference/_DepthFadeDist);
+
+                //return float4(lerp(_ColorTop,_ColorBot,depthFade).xyz,depthFade);
+                return lerp(_ColorTop,_ColorBot,depthFade).xyzw;
             }
             ENDCG
         }
