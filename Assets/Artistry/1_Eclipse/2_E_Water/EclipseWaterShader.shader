@@ -29,7 +29,7 @@ Shader "Unlit/EclipseWaterShader"
         ZTest LEqual
         ZWrite On
         Cull Back
-        Blend SrcAlpha OneMinusSrcAlpha
+        //Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -54,6 +54,7 @@ Shader "Unlit/EclipseWaterShader"
                 float4 vertex : SV_POSITION;
                 float4 screenPos : TEXCOORD2;
                 float3 viewDir : TEXCOORD3;
+                float3 worldPos : TEXCOORD4;
             };
 
             sampler2D _CameraDepthTexture;
@@ -72,6 +73,7 @@ Shader "Unlit/EclipseWaterShader"
 
                 o.screenPos = ComputeScreenPos(o.vertex);
                 o.viewDir = WorldSpaceViewDir(v.vertex);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -88,12 +90,24 @@ Shader "Unlit/EclipseWaterShader"
                 float depth01 = tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos)).r;
                 //Same > float depth01 = tex2D(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPosition.xy / i.screenPosition.w)).r;
                 float depthFromEyeLinear = LinearEyeDepth(depth01);
+                
 
                 float depthDifference = depthFromEyeLinear - i.screenPos.w;
-                float depthFade = saturate(depthDifference/_DepthFadeDist);
+                float depthFade = 1 - saturate(depthDifference/_DepthFadeDist);
 
                 //return float4(lerp(_ColorTop,_ColorBot,depthFade).xyz,depthFade);
-                return lerp(_ColorTop,_ColorBot,depthFade).xyzw;
+                float3 viewVectorWorldSpace = -1 * (_WorldSpaceCameraPos.xyz - i.worldPos);
+                //float3 viewVectorViewSpace = normalize(UnityWorldSpaceViewDir(vertexWorldPos));
+                
+                float3 vvws = (viewVectorWorldSpace/i.screenPos.w) * depthFromEyeLinear;
+                float3 worldSpaceScenePos = vvws + _WorldSpaceCameraPos.xyz;
+                
+                float3 worldWaterPos = i.worldPos - worldSpaceScenePos;
+                float worldWaterSurfaceToBottomDepth = worldWaterPos.y * -1;
+                worldWaterSurfaceToBottomDepth = saturate(exp(worldWaterSurfaceToBottomDepth/_DepthFadeDist));
+                
+                
+                return worldWaterSurfaceToBottomDepth;
             }
             ENDCG
         }

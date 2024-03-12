@@ -29,7 +29,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DepthFadeDist: 0.71
+    - _DepthFadeDist: 1
     m_Colors:
     - _ColorBot: {r: 0.031, g: 0.10099997, b: 0.34899998, a: 1}
     - _ColorTop: {r: 0.501, g: 0.827, b: 0.968, a: 1}
