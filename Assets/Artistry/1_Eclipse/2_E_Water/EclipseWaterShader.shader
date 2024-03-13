@@ -78,8 +78,15 @@ Shader "Unlit/EclipseWaterShader"
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.vertex = UnityObjectToClipPos(v.vertex);
+
+                //Wave Test
+                float wave1 = sin(((v.uv.x + _Time.y * 0.1) * 6.28) * 1);
+                float wave2 = sin(((v.uv.y + _Time.y * 0.1) * 6.28) * 1);
+                float combinedWaves = wave1 * wave2 * 1.5;
+                o.vertex.y += combinedWaves;
+                /**/
 
                 o.screenPos = ComputeScreenPos(o.vertex);
                 o.viewDir = WorldSpaceViewDir(v.vertex);
