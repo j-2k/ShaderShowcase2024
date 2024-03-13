@@ -18,9 +18,11 @@ Shader "Unlit/EclipseWaterShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _ColorTop("Surface Color", Color) = (0.501, 0.827, 0.968,1)//Surface light blue water(0.501, 0.827, 0.968,1)
+        _ColorTop("Shallow Color", Color) = (0.501, 0.827, 0.968,1)//Surface light blue water(0.501, 0.827, 0.968,1)
         _ColorBot("Deep Color", Color) = (0.031, 0.101, 0.349,1)//Deep dark blue water(0.031, 0.101, 0.349,1)
+        _ColorHorizon("Fresnel Horizon Color", Color) = (1, 0.1, 0.2,1)
         _DepthFadeDist("Depth Fade Distance", Range(0.001, 10)) = 0.5
+        _FresenlPow("Fresnel Power", Range(0.001, 10)) = 0.5
     }
     SubShader
     {
@@ -29,7 +31,7 @@ Shader "Unlit/EclipseWaterShader"
         ZTest LEqual
         ZWrite On
         Cull Back
-        //Blend SrcAlpha OneMinusSrcAlpha
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -45,6 +47,7 @@ Shader "Unlit/EclipseWaterShader"
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
+                float3 normal : NORMAL;
             };
 
             struct v2f
@@ -55,6 +58,7 @@ Shader "Unlit/EclipseWaterShader"
                 float4 screenPos : TEXCOORD2;
                 float3 viewDir : TEXCOORD3;
                 float3 worldPos : TEXCOORD4;
+                float3 normal : TEXCOORD5;
             };
 
             sampler2D _CameraDepthTexture;
@@ -63,7 +67,9 @@ Shader "Unlit/EclipseWaterShader"
             float4 _MainTex_ST;
             float4 _ColorTop;
             float4 _ColorBot;
+            float4 _ColorHorizon;
             float _DepthFadeDist;
+            float _FresenlPow;
 
             v2f vert (appdata v)
             {
@@ -74,6 +80,8 @@ Shader "Unlit/EclipseWaterShader"
                 o.screenPos = ComputeScreenPos(o.vertex);
                 o.viewDir = WorldSpaceViewDir(v.vertex);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                //o.normal = UnityObjectToWorldNormal(v.normal);
+                o.normal = v.normal;
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -106,8 +114,11 @@ Shader "Unlit/EclipseWaterShader"
                 float worldWaterSurfaceToBottomDepth = worldWaterPos.y * -1;
                 worldWaterSurfaceToBottomDepth = saturate(exp(worldWaterSurfaceToBottomDepth/_DepthFadeDist));
                 
+                float fresenlNode = pow((1.0 - saturate(dot(normalize(i.normal), normalize(i.viewDir)))), _FresenlPow);
+                float4 waterDepthColors = lerp(_ColorBot,_ColorTop,worldWaterSurfaceToBottomDepth);
                 
-                return worldWaterSurfaceToBottomDepth;
+                float4 finalColor = lerp(waterDepthColors,_ColorHorizon,fresenlNode);
+                return finalColor;
             }
             ENDCG
         }

@@ -29,8 +29,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DepthFadeDist: 1
+    - _DepthFadeDist: 0.35
+    - _FresenlPow: 7.16
     m_Colors:
     - _ColorBot: {r: 0.031, g: 0.10099997, b: 0.34899998, a: 1}
-    - _ColorTop: {r: 0.501, g: 0.827, b: 0.968, a: 1}
+    - _ColorHorizon: {r: 1, g: 0.09999997, b: 0.19999996, a: 1}
+    - _ColorTop: {r: 0, g: 0.9712162, b: 1, a: 1}
   m_BuildTextureStacks: []
