@@ -1,15 +1,14 @@
 Shader "Unlit/EclipseWaterShader"
 {
-    //Effects that need to be considered this is just a basis
-    //Light Direction
-    //Reflection
-    //Refraction
-    //Fresnel Effect
-    //Wave Pattern
-    //Water Depth
-    //Specular Highlights
-    //Foam
-    //Distance Fog
+    //Effects that need to be considered this is just a basis, indented with priority
+    //Reflection                Medium
+    //Refraction & Light Dir    High
+    //Fresnel Effect            High
+    //Wave Pattern              High
+    //Water Depth               Low
+    //Specular Highlights       X
+    //Foam                      Low
+    //Distance Fog              High
     //===Extras?===
     //Shadow Receiving / NOT Casting!
     //Simple Shallow Underwater effects (NOT underwater camera!)
@@ -26,7 +25,10 @@ Shader "Unlit/EclipseWaterShader"
     }
     SubShader
     {
+        // Tags 
         Tags { "RenderType"="Opaque" "Queue"="Transparent"}
+        // Grab the screen behind the object into _GrabTexture
+        //GrabPass{"_GrabTexture"}
         LOD 100
         ZTest LEqual
         ZWrite On
@@ -59,9 +61,11 @@ Shader "Unlit/EclipseWaterShader"
                 float3 viewDir : TEXCOORD3;
                 float3 worldPos : TEXCOORD4;
                 float3 normal : TEXCOORD5;
+                //float4 grabPos : TEXCOORD6;
             };
 
             sampler2D _CameraDepthTexture;
+            sampler2D _GrabTexture;
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
@@ -83,6 +87,7 @@ Shader "Unlit/EclipseWaterShader"
                 //o.normal = UnityObjectToWorldNormal(v.normal);
                 o.normal = v.normal;
                 UNITY_TRANSFER_FOG(o,o.vertex);
+                //o.grabPos = ComputeGrabScreenPos((o.vertex)); //grabpass test
                 return o;
             }
 
@@ -119,6 +124,14 @@ Shader "Unlit/EclipseWaterShader"
                 
                 float4 finalColor = lerp(waterDepthColors,_ColorHorizon,fresenlNode);
                 return finalColor;
+                /* Not sure if im using grab pass correctly but ill keep it here
+                float4 sceneColorsTex = tex2Dproj(_GrabTexture, i.grabPos); // to test if scene color is working do (get inverted scene colors) (1-tex2Dproj(_GrabTexture, i.grabPos);)
+                float3 underWaterCols = sceneColorsTex.rgb * (1 - finalColor.a);
+                return float4(underWaterCols + finalColor.rgb, finalColor.a);
+                */
+
+
+                
             }
             ENDCG
         }
