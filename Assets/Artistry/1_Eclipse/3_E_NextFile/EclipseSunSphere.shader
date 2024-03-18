@@ -6,7 +6,7 @@ Shader "Unlit/EclipseSunSphere"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Opaque" "Queue"="Geometry"}
         LOD 100
 
         Pass
@@ -23,7 +23,7 @@ Shader "Unlit/EclipseSunSphere"
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
-                float normal : NORMAL;
+                float3 normal : NORMAL;
             };
 
             struct v2f
@@ -44,6 +44,8 @@ Shader "Unlit/EclipseSunSphere"
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.normal = UnityObjectToWorldNormal(v.normal);
+                //o.normal = v.normal;
+                //o.viewDir = normalize(UnityWorldSpaceViewDir(v.vertex));
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -53,10 +55,9 @@ Shader "Unlit/EclipseSunSphere"
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, col);
-
-                return float4(col.xyz,1);
-                return col;
+                //UNITY_APPLY_FOG(i.fogCoord, col);
+                
+                return float4(i.normal,1);
             }
             ENDCG
         }
