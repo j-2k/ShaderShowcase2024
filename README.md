@@ -68,6 +68,7 @@ return worldWaterSurfaceToBottomDepth;
 ```
 ---
 ### Credits & Resources used to help me ❤️💚💙
-- https://catlikecoding.com/ literally the holy fucking bible for unity shaders period
+- https://catlikecoding.com/ literally the holy bible for unity shader code
 - https://roystan.net/articles/toon-water/ Roy helped a ton during university <3 
 - https://ameye.dev/notes/stylized-water-shader/ Amazing stylized water blog
+- https://www.youtube.com/@BenCloward for the shader graph enjoyers
