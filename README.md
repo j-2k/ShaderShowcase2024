@@ -67,6 +67,11 @@ worldWaterSurfaceToBottomDepth = saturate(exp(worldWaterSurfaceToBottomDepth/_De
 return worldWaterSurfaceToBottomDepth;
 ```
 ---
+
+# OPTIMIZATION NOTES
+- Adding & Multiplication operations in a shader can be done in one gpu cycle and is very optimal & fast in a shader. Try using it as much as possible and avoid subtracting & diving whenever you can!
+
+---
 ### Credits & Resources used to help me ❤️💚💙
 - https://catlikecoding.com/ literally the holy bible for unity shader code
 - https://roystan.net/articles/toon-water/ Roy helped a ton during university <3 
