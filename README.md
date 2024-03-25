@@ -71,6 +71,25 @@ return worldWaterSurfaceToBottomDepth;
 # OPTIMIZATION NOTES
 - Adding & Multiplication operations in a shader can be done in one gpu cycle and is very optimal & fast in a shader. Try using it as much as possible and avoid subtracting & diving whenever you can!
 
+[![An old rock in the desert](https://github.com/j-2k/ShaderShowcase2024/assets/52252068/ace16119-1aab-4439-9264-464426769c46 "Texture Memory Table by Ben Cloward")](https://www.youtube.com/watch?v=WJkEacYRhPU)  
+
+***IMPORTANT NOTE: THE TEXTURE MEMORY COST IS IN KB & THIS IS THE FINAL TEXTURE CREATED BY THE >>> GAME ENGINE <<< THIS IS NOT THE SOURCE FILE SIZE OF THE TEXUTRE AFTER ITS BEEN EXPORTED TO PNG/TGA/ETC BY PHOTOSHOP/TEXTURE EDITOR OF CHOICE, AKA, THIS IS NOT THE SAME SIZE AS SEEN IN THE FILE EXPLORER!***  
+
+**Whenever possible try to use compression if some artifacting is okay, (reduce texture memory [VRAM] where ever you can)**
+<ul>
+  <b>Compression Types starting from highest compressions to lowest/no compression!</b>
+    <ol type="1">
+      <li>DXT1 : Strongest compression & only uses RGB Texture Channels</li>
+      <li>DXT5 : Maximum compression but uses all RGBA Texture Channels</li>
+      <li>BC7 : Maximum compression but supports 3 (RGB) or 4 (RGBA) Texture Channels</li>
+      <li>R : NO compression and supports 1 (R) Color Texture Channel</li>
+      <li>RGB : NO compression and supports 3 (RGB) Color Texture Channel</li>
+      <li>RGBA : NO compression and supports 4 (RGBA) Color Texture Channel</li>
+    </ol>
+  If you are still interested in sizes & optimizing VRAM via textures check this <a href="https://www.poiyomi.com/blog/2022-10-17-texture-optimization#:~:text=GPU%20texture%20formats%20almost%20always,what%20the%20texture%20data%20contains.">blog post on poiyomi's site</a> for VRChat (texture memory in that game is pretty important & most people are b.d when it comes to understanding vram in that game except the japanese community)
+</ul>
+- 
+
 ---
 ### Credits & Resources used to help me ❤️💚💙
 - https://catlikecoding.com/ literally the holy bible for unity shader code
