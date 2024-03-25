@@ -68,7 +68,7 @@ return worldWaterSurfaceToBottomDepth;
 ```
 ---
 
-# OPTIMIZATION NOTES
+# Optimization Notes
 - Adding & Multiplication operations in a shader can be done in one gpu cycle and is very optimal & fast in a shader. Try using it as much as possible and avoid subtracting & diving whenever you can!
 
 [![An old rock in the desert](https://github.com/j-2k/ShaderShowcase2024/assets/52252068/ace16119-1aab-4439-9264-464426769c46 "Texture Memory Table by Ben Cloward")](https://www.youtube.com/watch?v=WJkEacYRhPU)  
@@ -88,7 +88,14 @@ return worldWaterSurfaceToBottomDepth;
     </ol>
   If you are still interested in sizes & optimizing VRAM via textures check this <a href="https://www.poiyomi.com/blog/2022-10-17-texture-optimization#:~:text=GPU%20texture%20formats%20almost%20always,what%20the%20texture%20data%20contains.">blog post on poiyomi's site</a> for VRChat (texture memory in that game is pretty important & most people are b.d when it comes to understanding vram in that game except the japanese community)
 </ul>
-- 
+
+---
+
+# Important Shader notes or videos
+I'm more of a visual learner so I prefer watching videos than reading garbage, so most resoures here will be in video format unless something in writing is insanely well explained.  
+*The resources below are simply a reminder for myself but they are very useful in general as a refresher to some topics even*
+- Ben Cloward explaining all input vectors nicely in shader graph! - https://www.youtube.com/watch?v=lrc-j7ub28U
+- TBD
 
 ---
 ### Credits & Resources used to help me ❤️💚💙
