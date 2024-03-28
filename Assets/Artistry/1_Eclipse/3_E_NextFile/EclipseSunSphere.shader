@@ -31,7 +31,7 @@ Shader "Unlit/EclipseSunSphere"
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
-                float3 viewDir : TEXCOORD2;
+                float4 viewDir : TEXCOORD2;
                 float3 normal : TEXCOORD3;
             };
 
@@ -43,8 +43,10 @@ Shader "Unlit/EclipseSunSphere"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                //o.normal = UnityObjectToWorldNormal(v.normal);
-                o.normal = v.normal;
+                o.normal = UnityObjectToWorldNormal(v.normal);
+                o.viewDir = mul(UNITY_MATRIX_MV, float4(o.normal, 0.0));//float4(o.normal, 1.0));
+                
+                //o.normal = v.normal;
                 //o.viewDir = normalize(UnityWorldSpaceViewDir(v.vertex));
 
                 //float3 n = UnityObjectToWorldNormal(v.normal);
@@ -52,6 +54,8 @@ Shader "Unlit/EclipseSunSphere"
                 //o.viewDir = normalize(mul((float3x3)UNITY_MATRIX_MV, -n));
                 //o.viewDir = (mul((float3x3)UNITY_MATRIX_V, -v.normal));
                 //o.viewDir = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, -n));
+
+                
                 
                 
                 UNITY_TRANSFER_FOG(o,o.vertex);
@@ -65,7 +69,7 @@ Shader "Unlit/EclipseSunSphere"
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
                 
-
+                return i.viewDir;
                 return float4(i.normal,1);
             }
             ENDCG
