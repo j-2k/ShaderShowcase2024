@@ -45,6 +45,7 @@ Shader "Unlit/EclipseSunSphere"
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.normal = UnityObjectToWorldNormal(v.normal);
                 o.viewDir = mul(UNITY_MATRIX_MV, float4(o.normal, 0.0));//float4(o.normal, 1.0));
+                o.viewDir = o.viewDir * 0.5 + 0.5;
                 
                 //o.normal = v.normal;
                 //o.viewDir = normalize(UnityWorldSpaceViewDir(v.vertex));
@@ -54,10 +55,6 @@ Shader "Unlit/EclipseSunSphere"
                 //o.viewDir = normalize(mul((float3x3)UNITY_MATRIX_MV, -n));
                 //o.viewDir = (mul((float3x3)UNITY_MATRIX_V, -v.normal));
                 //o.viewDir = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, -n));
-
-                
-                
-                
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -65,11 +62,11 @@ Shader "Unlit/EclipseSunSphere"
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
+                fixed4 col = tex2D(_MainTex, i.viewDir.xy);
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
                 
-                return i.viewDir;
+                return col;
                 return float4(i.normal,1);
             }
             ENDCG
