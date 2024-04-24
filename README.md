@@ -108,7 +108,10 @@ return worldWaterSurfaceToBottomDepth;
 
 ***IMPORTANT NOTE: THE TEXTURE MEMORY COST IS IN KB & THIS IS THE FINAL TEXTURE CREATED BY THE >>> GAME ENGINE <<< THIS IS NOT THE SOURCE FILE SIZE OF THE TEXUTRE AFTER ITS BEEN EXPORTED TO PNG/TGA/ETC BY PHOTOSHOP/TEXTURE EDITOR OF CHOICE, AKA, THIS IS NOT THE SAME SIZE AS SEEN IN THE FILE EXPLORER!***  
 
-**Whenever possible try to use compression if some artifacting is okay, (reduce texture memory [VRAM] where ever you can)**
+IMPORTANT NOTES ABOUT VRAM & FILE SIZE:
+- REDUCE TEXTURE SIZE, AS MUCH AS POSSIBLE IF THE QUALITY IS MAINTAINABLE! (This reduces VRAM usage extremely important!)
+- USE COMPRESSION IF THE ARTIFICATING IS MINIMAL AND IS OKAY! (This reduces file size)
+
 <ul>
   <b>Compression Types starting from highest compressions to lowest/no compression!</b>
     <ol type="1">
