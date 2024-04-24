@@ -82,11 +82,12 @@ Shader "Unlit/EclipseWaterShader"
                 o.vertex = UnityObjectToClipPos(v.vertex);
 
                 //Wave Test
+                /*
                 float wave1 = sin(((v.uv.x + _Time.y * 0.1) * 6.28) * 1);
                 float wave2 = sin(((v.uv.y + _Time.y * 0.1) * 6.28) * 1);
                 float combinedWaves = wave1 * wave2 * 1.5;
                 o.vertex.y += combinedWaves;
-                /**/
+                */
 
                 o.screenPos = ComputeScreenPos(o.vertex);
                 o.viewDir = WorldSpaceViewDir(v.vertex);
@@ -130,6 +131,10 @@ Shader "Unlit/EclipseWaterShader"
                 float4 waterDepthColors = lerp(_ColorBot,_ColorTop,worldWaterSurfaceToBottomDepth);
                 
                 float4 finalColor = lerp(waterDepthColors,_ColorHorizon,fresenlNode);
+                
+                //Underwater Color idk how to get scene colors so IDK how to do this part...
+                //float3 underwaterCol = Scenecolors???.rgb * (1 - finalColor.a);
+
                 return finalColor;
                 /* Not sure if im using grab pass correctly but ill keep it here
                 float4 sceneColorsTex = tex2Dproj(_GrabTexture, i.grabPos); // to test if scene color is working do (get inverted scene colors) (1-tex2Dproj(_GrabTexture, i.grabPos);)
