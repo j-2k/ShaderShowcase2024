@@ -25,6 +25,39 @@ I will try commenting the code below in each section to help me understand what'
 o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 ```
 ---
+###  Matcap Shader Implementation (w/ Perspective Fix)
+NO PERSPECTIVE FIX
+```hlsl
+//IN VERT SHADER:
+float3 viewNorm = normalize(mul(UNITY_MATRIX_MV, v.normal));
+o.matcapUV = viewNorm.xy * 0.5 + 0.5;
+//Use the matcapUV as a substitute for the UV slot in sampling textures!
+//If its working you should see a non tiled texture facing you with some perspective deviation when you looking away from it!
+//If its tiled it needs to be normalized! when you look directly at it, it should directly face you!
+```
+WITH PERSPECTIVE FIX
+```hlsl
+//IN VERT SHADER:
+float3 worldNorm = UnityObjectToWorldNormal(v.normal);
+float3 viewNorm = mul((float3x3)UNITY_MATRIX_V, worldNorm);
+
+//The bulk of the prespective fix below from bgolus : 
+{ //https://forum.unity.com/threads/getting-normals-relative-to-camera-view.452631/
+  // get view space position of vertex
+  float3 viewPos = UnityObjectToViewPos(v.vertex);
+  float3 viewDir = normalize(viewPos);
+  
+  // get vector perpendicular to both view direction and view normal
+  float3 viewCross = cross(viewDir, viewNorm);
+                     
+  // swizzle perpendicular vector components to create a new perspective corrected view normal
+  viewNorm = float3(-viewCross.y, viewCross.x, 0.0);
+}
+o.matcapUV = viewNorm.xy * 0.5 + 0.5;
+//Use the matcapUV as a substitute for the UV slot in sampling textures!
+//If you use this the matcap will always look at the camera!
+```
+---
 ### UV Spherical Unwrapping!
 ```hlsl
 //IN VERT SHADER:
