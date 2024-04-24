@@ -103,3 +103,4 @@ I'm more of a visual learner so I prefer watching videos than reading garbage, s
 - https://roystan.net/articles/toon-water/ Roy helped a ton during university <3 
 - https://ameye.dev/notes/stylized-water-shader/ Amazing stylized water blog
 - https://www.youtube.com/@BenCloward for the shader graph enjoyers
+- https://halisavakis.com/category/blog-posts/my-take-on-shaders/ An incredible blog with tons of amazing shaders!
