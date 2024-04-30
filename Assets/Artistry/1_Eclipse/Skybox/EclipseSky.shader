@@ -134,14 +134,20 @@ Shader "Jumas_Shaders/EclipseSky"
  
                 //sun
                 float3 worldSun = acos(dot(-_WorldSpaceLightPos0,normalize(i.viewDirection)));
-                float3 clipSun = acos(dot(normalize(_SunClipPos - _WorldSpaceLightPos0),normalize(i.viewDirection)));
+                //float3 clipSun = acos(dot(normalize(_SunClipPos - _WorldSpaceLightPos0),normalize(i.viewDirection)));
                 float4 stepSun = float4(1 - step(_SunSize,worldSun),1);
-                float4 stepclipSun = float4(1 - step(_SunClipSize,clipSun),1);
-                float4 finalSuns = saturate(stepSun - stepclipSun) * _SunColor;
+                //float4 sSun = float4(1 - smoothstep(_SunSize - 0.01,_SunSize + 0.01,worldSun),1);
+                float4 stepclipSun = float4(1 - step(_SunClipSize,worldSun),1); // since im just makign eclipse i dont need moving clip sun i will reuse world sun. float4 stepclipSun = float4(1 - step(_SunClipSize,clipSun),1);
+                //float4 scSun = float4(1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,clipSun),1);
+                float4 finalSuns = saturate(stepSun - stepclipSun) * (_SunColor * 3);// saturate(sSun - scSun) * _SunColor;
+
+                float4 fc = (skyCol + finalSuns) * (1 - stepclipSun) ; //skyCol - stepSun + finalSuns;
 
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
-                return skyCol + finalSuns;
+
+                
+                return fc;
                 //return float4(col,1);
             }
             ENDCG
