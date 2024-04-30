@@ -1,4 +1,4 @@
-Shader "Unlit/EclipseWaterShader"
+Shader "Jumas_Shaders/EclipseWaterShader"
 {
     //Effects that need to be considered this is just a basis, indented with priority
     //Reflection                Medium

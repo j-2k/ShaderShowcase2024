@@ -16,7 +16,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -31,8 +31,16 @@ Material:
     m_Floats:
     - _DepthFadeDist: 1.19
     - _FresenlPow: 4.07
+    - _Moffset: 0
+    - _SSM: 0
+    - _SST: 0
+    - _SunSize: 1
+    - _Toffset: 0
     m_Colors:
     - _ColorBot: {r: 0.12398318, g: 0.07115514, b: 0.36792445, a: 1}
     - _ColorHorizon: {r: 1, g: 0, b: 0.11372566, a: 1}
+    - _ColorMid: {r: 0.6, g: 0.6, b: 0.6, a: 1}
     - _ColorTop: {r: 0, g: 0.600753, b: 0.7830188, a: 1}
+    - _SunColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SunPosition: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
