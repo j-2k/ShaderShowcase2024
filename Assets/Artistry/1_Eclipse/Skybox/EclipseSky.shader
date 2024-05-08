@@ -141,7 +141,8 @@ Shader "Jumas_Shaders/EclipseSky"
                 //float4 scSun = float4(1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,clipSun),1);
                 float4 finalSuns = saturate(stepSun - stepclipSun) * (_SunColor * 3);// saturate(sSun - scSun) * _SunColor;
 
-                float4 fc = (skyCol + finalSuns) * (1 - stepclipSun) ; //skyCol - stepSun + finalSuns;
+                //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
+                float4 fc = (skyCol * (1-stepclipSun)) + finalSuns; //(skyCol * (1-stepclipSun))  better than (skyCol - stepclipSun)
 
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);

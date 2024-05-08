@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Unlit_EclipseSky
+  m_Name: EclipseSky
   m_Shader: {fileID: 4800000, guid: 5bcfd678a35044cae99ac8ec21989d88, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -35,15 +35,15 @@ Material:
     - _SSM: 0.42
     - _SST: 0.55
     - _SkyOffset: 0
-    - _SunClipSize: 0.15
-    - _SunSize: 0.16
+    - _SunClipSize: 0.296
+    - _SunSize: 0.326
     - _Toffset: -0.13
     m_Colors:
     - _ColorBot: {r: 0.3529412, g: 0.07058824, b: 0.043137256, a: 1}
     - _ColorMid: {r: 0.5019608, g: 0.17254898, b: 0.12941173, a: 1}
     - _ColorTop: {r: 0.7176471, g: 0.16878581, b: 0.08962262, a: 1}
     - _SunClipPos: {r: 0, g: 0, b: 0, a: 0}
-    - _SunColor: {r: 5.9921565, g: 5.9921565, b: 5.9921565, a: 1}
+    - _SunColor: {r: 2.9960783, g: 2.9960783, b: 2.9960783, a: 1}
     - _SunPos: {r: 0, g: 0.68, b: -0.18, a: 0}
     - _SunPosition: {r: 1.07, g: 1.09, b: 2.99, a: 0}
   m_BuildTextureStacks: []
