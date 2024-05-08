@@ -41,8 +41,8 @@ Shader "Jumas_Shaders/EclipseSky"
         Pass
         {
             CGPROGRAM
-// Upgrade NOTE: excluded shader from DX11; has structs without semantics (struct v2f members viewDirection)
-#pragma exclude_renderers d3d11
+            // Upgrade NOTE: excluded shader from DX11; has structs without semantics (struct v2f members viewDirection)
+            #pragma exclude_renderers d3d11///??? wtf is this, i didnt add this but im on mac and i know on my pc dx11 is what im usually on??? will remove it later if i see prblms
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
@@ -120,19 +120,21 @@ Shader "Jumas_Shaders/EclipseSky"
                 float arcTan2X = atan2(worldPos.x,worldPos.z)/TAU;
                 float2 skyUV = float2(arcTan2X,arcSineY);
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, skyUV);
+                float2 scrollUV = skyUV;
+                scrollUV.y += _Time.y * 0.1;
+                fixed4 col = tex2D(_MainTex, scrollUV);
                 
-                //what i usually do for skybox cols
+                //What I usually do for skybox cols
                 //float iLerp = inverseLerp(_PushTop,_PushBot,skyUV.y) + _SkyOffset;
                 //float3 color = lerp(_ColorBot.rgb, _ColorTop.rgb, saturate(iLerp));
                 
-                //new skybox cols that im trying out
+                //New Skybox cols that im trying out
                 float middleThreshold = smoothstep(0.0, 0.5 - (1.0 - _SSM) / 2.0, skyUV.y - _Moffset);
                 float topThreshold = smoothstep(0.5, 1.0 - (1.0 - _SST) / 2.0 , skyUV.y - _Toffset);
                 fixed4 skyCol = lerp(_ColorBot, _ColorMid, middleThreshold);
                 skyCol = lerp(skyCol, _ColorTop, topThreshold);
  
-                //sun
+                //Skybox Sun 
                 float3 worldSun = acos(dot(-_WorldSpaceLightPos0,normalize(i.viewDirection)));
                 //float3 clipSun = acos(dot(normalize(_SunClipPos - _WorldSpaceLightPos0),normalize(i.viewDirection)));
                 float4 stepSun = float4(1 - step(_SunSize,worldSun),1);
@@ -140,14 +142,22 @@ Shader "Jumas_Shaders/EclipseSky"
                 float4 stepclipSun = float4(1 - step(_SunClipSize,worldSun),1); // since im just makign eclipse i dont need moving clip sun i will reuse world sun. float4 stepclipSun = float4(1 - step(_SunClipSize,clipSun),1);
                 //float4 scSun = float4(1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,clipSun),1);
                 float4 finalSuns = saturate(stepSun - stepclipSun) * (_SunColor * 3);// saturate(sSun - scSun) * _SunColor;
+                
+                float smoothSun = 1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,worldSun);
 
+                //Eclipse Drop Down Beam
+                float beam = saturate(stepSun - stepclipSun) * 0.5;
+
+                //Final Colors
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
-                float4 fc = (skyCol * (1-stepclipSun)) + finalSuns; //(skyCol * (1-stepclipSun))  better than (skyCol - stepclipSun)
+                float4 fc = (skyCol - smoothSun) + finalSuns; //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
+                //fc += col;
+
+                fc = worldSun.xxxx;
 
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
 
-                
                 return fc;
                 //return float4(col,1);
             }
