@@ -123,10 +123,12 @@ Shader "Jumas_Shaders/EclipseSky"
             }
 
             fixed4 frag (v2f i) : SV_Target
-            {
+            {   
+                float2 uv = i.uv;
+
                 float3 worldPos = normalize(i.worldPos);
-                float arcSineY = asin(worldPos.y)/(PI/2); //PI/2;
-                float arcTan2X = atan2(worldPos.x,worldPos.z)/TAU;
+                float arcSineY = asin(worldPos.y)/(PI/2); //PI/2;     //+0.5 to map to 0-1
+                float arcTan2X = atan2(worldPos.x,worldPos.z)/TAU;    //
                 float2 skyUV = float2(arcTan2X,arcSineY);
                 // sample the texture
                 float2 scrollUV = skyUV;
@@ -154,8 +156,11 @@ Shader "Jumas_Shaders/EclipseSky"
                 
                 float smoothSun = 1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,worldSun);
 
+                //Sun Position Calculation for Drop Beam
+                float3 sunDir = normalize(_WorldSpaceLightPos0 - worldPos); //Print this to see the point! Pretty cool
+
                 //Eclipse Drop Down Beam
-                float2 beamLine = float2(Scroll1,clamp(skyUV.y,Scroll2,worldSun.y));
+                float2 beamLine = float2(Scroll1,clamp(skyUV.y,-1,1-min(1,stepSun.y)));
                 float beamDistStep = 1 - smoothstep(0.009,0.011,distance(skyUV,beamLine));
 
                 //Final Colors
@@ -164,7 +169,13 @@ Shader "Jumas_Shaders/EclipseSky"
                 //fc += col;
 
                 //fc = worldSun.xxxx;
-                fc += beamDistStep;// + stepclipSun.xxxx;
+                fc = beamDistStep + stepclipSun.xxxx;
+                //fc = sunDir;
+                //fc = float4(sunPos.xy,0,1);
+                //fc = beamDistStep;
+
+                //fc = -_WorldSpaceLightPos0;
+                
 
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);

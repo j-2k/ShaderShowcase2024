@@ -31,7 +31,7 @@ Material:
     m_Floats:
     - Scroll1: 0
     - Scroll2: -1
-    - Scroll3: 0.25
+    - Scroll3: 0
     - _Moffset: -0.25
     - _PushBot: 0.05
     - _PushTop: -0.05
