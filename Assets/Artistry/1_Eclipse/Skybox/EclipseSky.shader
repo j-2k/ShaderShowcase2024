@@ -155,16 +155,16 @@ Shader "Jumas_Shaders/EclipseSky"
                 float smoothSun = 1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,worldSun);
 
                 //Eclipse Drop Down Beam
-                float2 beamLine = float2(Scroll1,skyUV.y);
-                float beam = distance(skyUV,beamLine);
+                float2 beamLine = float2(Scroll1,clamp(skyUV.y,Scroll2,worldSun.y));
+                float beamDistStep = 1 - smoothstep(0.009,0.011,distance(skyUV,beamLine));
 
                 //Final Colors
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
                 float4 fc = (skyCol - smoothSun) + finalSuns; //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
                 //fc += col;
 
-                fc = worldSun.xxxx;
-                fc = beam;
+                //fc = worldSun.xxxx;
+                fc += beamDistStep;// + stepclipSun.xxxx;
 
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
