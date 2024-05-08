@@ -31,6 +31,11 @@ Shader "Jumas_Shaders/EclipseSky"
         [HDR] _SunColor("Sun Color", Color) = (1,1,1,1)
         //_SunPos("Sun Position", Vector) = (0,0,0,0)
         _SunClipPos("Sun Clip Position", Vector) = (0,0,0,0)
+
+        [Header(Scroll Control Testing)]
+        Scroll1("Scroll 1", Range(-1.0,1.0)) = 0.0
+        Scroll2("Scroll 2", Range(-1.0,1.0)) = 0.0
+        Scroll3("Scroll 3", Range(-1.0,1.0)) = 0.0
         
     }
     SubShader
@@ -94,6 +99,10 @@ Shader "Jumas_Shaders/EclipseSky"
             float _Moffset;
             float _Toffset;
 
+            float Scroll1;
+            float Scroll2;
+            float Scroll3;
+
 
 
             v2f vert (appdata v)
@@ -134,7 +143,7 @@ Shader "Jumas_Shaders/EclipseSky"
                 fixed4 skyCol = lerp(_ColorBot, _ColorMid, middleThreshold);
                 skyCol = lerp(skyCol, _ColorTop, topThreshold);
  
-                //Skybox Sun 
+                //Skybox Sun - I learned what this line below does finally lmao go to notes below to see. 
                 float3 worldSun = acos(dot(-_WorldSpaceLightPos0,normalize(i.viewDirection)));
                 //float3 clipSun = acos(dot(normalize(_SunClipPos - _WorldSpaceLightPos0),normalize(i.viewDirection)));
                 float4 stepSun = float4(1 - step(_SunSize,worldSun),1);
@@ -146,7 +155,8 @@ Shader "Jumas_Shaders/EclipseSky"
                 float smoothSun = 1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,worldSun);
 
                 //Eclipse Drop Down Beam
-                float beam = saturate(stepSun - stepclipSun) * 0.5;
+                float2 beamLine = float2(Scroll1,skyUV.y);
+                float beam = distance(skyUV,beamLine);
 
                 //Final Colors
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
@@ -154,6 +164,7 @@ Shader "Jumas_Shaders/EclipseSky"
                 //fc += col;
 
                 fc = worldSun.xxxx;
+                fc = beam;
 
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
@@ -165,3 +176,29 @@ Shader "Jumas_Shaders/EclipseSky"
         }
     }
 }
+
+
+//Notes:
+
+//Explaining worldSun & specifically the arccosine function being used since that didnt make sense to me at first.
+//Basically, we do a dot product between 2 vectors, simple, but then we get the inverse cosine of that dot product.
+//The reason is because we want to solve for theta & the inverse cosine must be used to solve for theta check the formula below.
+//The dot product of 2 normalized vectors is the cosine of the angle between them
+//MUTLIPLE EXAMPLES BELOW, FORMULA FOR FINDING ANGLE BETWEEN 2 VECTORS => Cos(THETA) = A.B / |A||B|
+//SOLVING FOR THETA AKA THE ANGLE BETWEEN THE 2 VECTORS (LIGHT & VIEW DIRECTION)
+//=> Assume (A.B / |A||B|) = 1 =>       Cos(THETA) = 1 =>       THETA = arccos(1) =>        THETA = 0 deg or 0 rad (or their full revolution counterparts 360 deg or 2pi rad)
+//Flipped Example:
+//=> Assume (A.B / |A||B|) = 0 =>       Cos(THETA) = 0 =>       THETA = arccos(0) =>        THETA = 90 deg or pi/2 rad
+//Peculiar Example:
+//=> Assume (A.B / |A||B|) = 0.2345 =>  Cos(THETA) = 0.2345 =>  THETA = arccos(0.2345) =>   THETA = ~76.81 deg or ~1.341 rad
+
+//Even though the above is fairly simple, I think its kinda important to know whats going on, but the thing that really needs explanation is spherical coordinates.
+//Spherical coordinates are a way to represent 3D space using 2 angles & a radius, the angles are theta & phi, the radius is r.
+//theta is the angle in the xz plane from the positive z axis, phi is the angle from the positive y axis.
+/*
+    float phi = atan(FragPos.z, FragPos.x); // Longitude
+    float theta = acos(FragPos.y); // Latitude
+    float u = (phi + pi) / (2.0 * pi); // Normalize longitude to [0, 1]
+    float v = (theta + pi / 2.0) / pi; // Normalize latitude to [0, 1]
+*/
+
