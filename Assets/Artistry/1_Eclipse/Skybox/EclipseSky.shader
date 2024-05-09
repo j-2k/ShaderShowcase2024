@@ -46,8 +46,11 @@ Shader "Jumas_Shaders/EclipseSky"
         Pass
         {
             CGPROGRAM
+
+            //??? wtf is this, i didnt add this but im on mac and i know on my pc dx11 is what im usually on??? will remove it later if i see prblms
             // Upgrade NOTE: excluded shader from DX11; has structs without semantics (struct v2f members viewDirection)
-            #pragma exclude_renderers d3d11///??? wtf is this, i didnt add this but im on mac and i know on my pc dx11 is what im usually on??? will remove it later if i see prblms
+            #pragma exclude_renderers d3d11
+
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
@@ -157,10 +160,10 @@ Shader "Jumas_Shaders/EclipseSky"
                 float smoothSun = 1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,worldSun);
 
                 //Sun Position Calculation for Drop Beam
-                float3 sunDir = normalize(_WorldSpaceLightPos0 - worldPos); //Print this to see the point! Pretty cool
+                float3 sunDir = (_WorldSpaceLightPos0 - worldPos);//normalize //Print this to see the point! Pretty cool
 
                 //Eclipse Drop Down Beam
-                float2 beamLine = float2(Scroll1,clamp(skyUV.y,-1,1-min(1,stepSun.y)));
+                float2 beamLine = float2(Scroll1,clamp(skyUV.y,-1,sunDir.y - sunDir.z));
                 float beamDistStep = 1 - smoothstep(0.009,0.011,distance(skyUV,beamLine));
 
                 //Final Colors
@@ -169,7 +172,7 @@ Shader "Jumas_Shaders/EclipseSky"
                 //fc += col;
 
                 //fc = worldSun.xxxx;
-                fc = beamDistStep + stepclipSun.xxxx;
+                fc =(stepclipSun.xxxx) +  sunDir.xyzx + beamDistStep;
                 //fc = sunDir;
                 //fc = float4(sunPos.xy,0,1);
                 //fc = beamDistStep;
