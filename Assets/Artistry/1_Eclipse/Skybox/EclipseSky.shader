@@ -164,17 +164,22 @@ Shader "Jumas_Shaders/EclipseSky"
 
                 //Eclipse Drop Down Beam                            //ATAN2 COMIN IN CLUTCH AGAIN LFG                   //clamp(skyUV.y,-1,sunDir.y - sunDir.z)
                 float2 beamLine = float2(Scroll1,clamp(skyUV.y,-1,atan2(sunDir.y,sunDir.z)));//clamp(skyUV.y,-1,sunDir.y - sunDir.z));
-                float beamDistStep = 1 - smoothstep(0.009,0.021,distance(skyUV,beamLine));
+                float logY = log(skyUV.y);
+                float beamDistStep = 1 - smoothstep(0.001,0.02,distance(skyUV,beamLine));
 
                 //Final Colors
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
-                float4 fc = (skyCol - smoothSun) + finalSuns; //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
-                //fc += col;
+                
+                //float4 fc = (skyCol - smoothSun) + finalSuns //ADDING THIS PART ON THE RIGHT REMOVED ALIASING I NEED TO THINK OF A BETTER WAY BUT IM TOO LAZY RN + (beamDistStep - smoothSun);
 
+                float4 fc = (skyCol - smoothSun) + finalSuns + (beamDistStep - smoothSun); //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
+                //fc += col;
+                //fc = smoothSun;
                 
 
+
                 //fc = worldSun.xxxx;
-                fc = (stepclipSun.xxxx * 0.5) + beamDistStep; //sunDir.xyzx
+                //fc = (stepclipSun.xxxx * 1) + beamDistStep; //sunDir.xyzx
                 //fc = sunDir;
                 //fc = float4(sunPos.xy,0,1);
                 //fc = beamDistStep;
