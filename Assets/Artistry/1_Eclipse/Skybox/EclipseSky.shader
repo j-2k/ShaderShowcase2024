@@ -49,7 +49,7 @@ Shader "Jumas_Shaders/EclipseSky"
 
             //??? wtf is this, i didnt add this but im on mac and i know on my pc dx11 is what im usually on??? will remove it later if i see prblms
             // Upgrade NOTE: excluded shader from DX11; has structs without semantics (struct v2f members viewDirection)
-            #pragma exclude_renderers d3d11
+            //#pragma exclude_renderers d3d11   removing
 
             #pragma vertex vert
             #pragma fragment frag
@@ -170,6 +170,8 @@ Shader "Jumas_Shaders/EclipseSky"
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
                 float4 fc = (skyCol - smoothSun) + finalSuns; //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
                 //fc += col;
+
+                
 
                 //fc = worldSun.xxxx;
                 fc =(stepclipSun.xxxx) +  sunDir.xyzx + beamDistStep;

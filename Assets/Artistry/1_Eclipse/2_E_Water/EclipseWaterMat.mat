@@ -30,7 +30,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _DepthFadeDist: 1.19
-    - _FresenlPow: 4.07
+    - _FresenlPow: 7.6
     - _Moffset: 0
     - _SSM: 0
     - _SST: 0

@@ -109,7 +109,7 @@ Shader "Jumas_Shaders/EclipseWaterShader"
 
                 //Get Linear Depth Value
                 float depth01 = tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos)).r;
-                //Same > float depth01 = tex2D(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPosition.xy / i.screenPosition.w)).r;
+                //float depth01 = tex2D(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos.xy / i.screenPos.w)).r;
                 float depthFromEyeLinear = LinearEyeDepth(depth01);
                 
 
