@@ -162,9 +162,9 @@ Shader "Jumas_Shaders/EclipseSky"
                 //Sun Position Calculation for Drop Beam
                 float3 sunDir = (_WorldSpaceLightPos0 - worldPos);//normalize //Print this to see the point! Pretty cool
 
-                //Eclipse Drop Down Beam
-                float2 beamLine = float2(Scroll1,clamp(skyUV.y,-1,sunDir.y - sunDir.z));
-                float beamDistStep = 1 - smoothstep(0.009,0.011,distance(skyUV,beamLine));
+                //Eclipse Drop Down Beam                            //ATAN2 COMIN IN CLUTCH AGAIN LFG                   //clamp(skyUV.y,-1,sunDir.y - sunDir.z)
+                float2 beamLine = float2(Scroll1,clamp(skyUV.y,-1,atan2(sunDir.y,sunDir.z)));//clamp(skyUV.y,-1,sunDir.y - sunDir.z));
+                float beamDistStep = 1 - smoothstep(0.009,0.021,distance(skyUV,beamLine));
 
                 //Final Colors
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
@@ -174,7 +174,7 @@ Shader "Jumas_Shaders/EclipseSky"
                 
 
                 //fc = worldSun.xxxx;
-                fc =(stepclipSun.xxxx) +  sunDir.xyzx + beamDistStep;
+                fc = (stepclipSun.xxxx * 0.5) + beamDistStep; //sunDir.xyzx
                 //fc = sunDir;
                 //fc = float4(sunPos.xy,0,1);
                 //fc = beamDistStep;

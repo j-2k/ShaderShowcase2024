@@ -30,7 +30,7 @@ Material:
     m_Ints: []
     m_Floats:
     - Scroll1: 0
-    - Scroll2: -0
+    - Scroll2: 0
     - Scroll3: -1
     - _Moffset: -0.25
     - _PushBot: 0.05
