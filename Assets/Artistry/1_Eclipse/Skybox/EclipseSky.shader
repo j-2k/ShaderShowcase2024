@@ -163,9 +163,13 @@ Shader "Jumas_Shaders/EclipseSky"
                 float3 sunDir = (_WorldSpaceLightPos0 - worldPos);//normalize //Print this to see the point! Pretty cool
 
                 //Eclipse Drop Down Beam                            //ATAN2 COMIN IN CLUTCH AGAIN LFG                   //clamp(skyUV.y,-1,sunDir.y - sunDir.z)
+                //skyUV.y = skyUV.y * 0.5 + 0.5;
                 float2 beamLine = float2(Scroll1,clamp(skyUV.y,-1,atan2(sunDir.y,sunDir.z)));//clamp(skyUV.y,-1,sunDir.y - sunDir.z));
                 float logY = log(skyUV.y);
                 float beamDistStep = 1 - smoothstep(0.001,0.02,distance(skyUV,beamLine));
+
+                //Next is to make beam smaller as it goes down, I can probably do it directly above but im struggling to do it that way, so im going to try another method below.
+                //going down skyuv.y thin the beam (beamDistStep)
 
                 //Final Colors
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
@@ -184,7 +188,7 @@ Shader "Jumas_Shaders/EclipseSky"
                 //fc = float4(sunPos.xy,0,1);
                 //fc = beamDistStep;
 
-                //fc = -_WorldSpaceLightPos0;
+                //fc = skyUV.yyyy * 0.5 + 0.5;
                 
 
                 // apply fog
