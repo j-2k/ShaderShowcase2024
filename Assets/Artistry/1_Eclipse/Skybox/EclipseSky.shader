@@ -166,17 +166,21 @@ Shader "Jumas_Shaders/EclipseSky"
                 //skyUV.y = skyUV.y * 0.5 + 0.5;
                 float2 beamLine = float2(Scroll1,clamp(skyUV.y,-1,atan2(sunDir.y,sunDir.z)));//clamp(skyUV.y,-1,sunDir.y - sunDir.z));
                 float logY = log(skyUV.y);
-                float beamDistStep = 1 - smoothstep(0.001,0.02,distance(skyUV,beamLine));
+                float beamDistStep = 1 - smoothstep(-0.01,0.03,distance(skyUV,beamLine));
 
                 //Next is to make beam smaller as it goes down, I can probably do it directly above but im struggling to do it that way, so im going to try another method below.
                 //going down skyuv.y thin the beam (beamDistStep)
 
+                float thinMask = skyUV.y*1.2;
+                float finalDownBeam = (thinMask + beamDistStep * (sin(_Time.y)+7.75)*0.15  ) * smoothstep(0.05,0.1,beamDistStep);
+                return  finalDownBeam;
+                //return beamDistStep;
                 //Final Colors
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
                 
                 //float4 fc = (skyCol - smoothSun) + finalSuns //ADDING THIS PART ON THE RIGHT REMOVED ALIASING I NEED TO THINK OF A BETTER WAY BUT IM TOO LAZY RN + (beamDistStep - smoothSun);
 
-                float4 fc = (skyCol - smoothSun) + finalSuns + (beamDistStep - smoothSun); //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
+                float4 fc = (skyCol - smoothSun) + finalSuns + (saturate(finalDownBeam) - smoothSun); //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
                 //fc += col;
                 //fc = smoothSun;
                 
