@@ -155,7 +155,7 @@ Shader "Jumas_Shaders/EclipseSky"
                 //float4 sSun = float4(1 - smoothstep(_SunSize - 0.01,_SunSize + 0.01,worldSun),1);
                 float4 stepclipSun = float4(1 - step(_SunClipSize,worldSun),1); // since im just makign eclipse i dont need moving clip sun i will reuse world sun. float4 stepclipSun = float4(1 - step(_SunClipSize,clipSun),1);
                 //float4 scSun = float4(1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,clipSun),1);
-                float4 finalSuns = saturate(stepSun - stepclipSun) * (_SunColor * 3);// saturate(sSun - scSun) * _SunColor;
+                float4 finalSuns = saturate(stepSun - stepclipSun) * (_SunColor * 4);// saturate(sSun - scSun) * _SunColor;
                 
                 float smoothSun = 1 - smoothstep(_SunClipSize - 0.01,_SunClipSize + 0.01,worldSun);
 
@@ -171,16 +171,21 @@ Shader "Jumas_Shaders/EclipseSky"
                 //Next is to make beam smaller as it goes down, I can probably do it directly above but im struggling to do it that way, so im going to try another method below.
                 //going down skyuv.y thin the beam (beamDistStep)
 
-                float thinMask = skyUV.y*1.2;
-                float finalDownBeam = (thinMask + beamDistStep * (sin(_Time.y)+7.75)*0.15  ) * smoothstep(0.05,0.1,beamDistStep);
-                return  finalDownBeam;
+                float thinMask = skyUV.y*1.2;//- 0.1;
+                float beam = (thinMask + beamDistStep *  smoothstep(0.05,0.1,beamDistStep) * (sin(_Time.y)+7.75)*0.15);
+                beam = saturate(pow(beam,3)-0.04);//smoothstep(0.05,0.1,beamDistStep); this line is trash and can be better and more optimized
+                float4 finalBeam = beam * (_SunColor*1) * (1-smoothSun);
+                return beam;//remove the sky issue
+                finalBeam = smoothstep(0.1,5,finalBeam);
+                //return finalDownBeam * 1.5 - 0.6;
+
                 //return beamDistStep;
                 //Final Colors
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
                 
                 //float4 fc = (skyCol - smoothSun) + finalSuns //ADDING THIS PART ON THE RIGHT REMOVED ALIASING I NEED TO THINK OF A BETTER WAY BUT IM TOO LAZY RN + (beamDistStep - smoothSun);
 
-                float4 fc = (skyCol - smoothSun) + finalSuns + (saturate(finalDownBeam) - smoothSun); //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
+                float4 fc = (skyCol - smoothSun) + finalSuns + finalBeam; //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
                 //fc += col;
                 //fc = smoothSun;
                 

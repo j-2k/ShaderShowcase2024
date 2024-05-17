@@ -46,7 +46,7 @@ Material:
     - _ColorMid: {r: 0.5019608, g: 0.17254898, b: 0.12941173, a: 1}
     - _ColorTop: {r: 0.7176471, g: 0.16878581, b: 0.08962262, a: 1}
     - _SunClipPos: {r: 0, g: 0, b: 0, a: 0}
-    - _SunColor: {r: 5.992157, g: 5.992157, b: 5.992157, a: 1}
+    - _SunColor: {r: 8.564654, g: 7.084503, b: 2.8683515, a: 1}
     - _SunPos: {r: 0, g: 0.68, b: -0.18, a: 0}
     - _SunPosition: {r: 1.07, g: 1.09, b: 2.99, a: 0}
   m_BuildTextureStacks: []
