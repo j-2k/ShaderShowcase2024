@@ -54,7 +54,7 @@ Shader "Jumas_Shaders/EclipseSky"
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
-            #pragma multi_compile_fog
+            //#pragma multi_compile_fog
 
             #include "UnityCG.cginc"
 
@@ -116,7 +116,7 @@ Shader "Jumas_Shaders/EclipseSky"
                 o.worldPos = mul(unity_ObjectToWorld,v.vertex);
                 //o.viewDirection = _WorldSpaceCameraPos - o.worldPos;
                 o.viewDirection = WorldSpaceViewDir(v.vertex);
-                UNITY_TRANSFER_FOG(o,o.vertex);
+                //UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
@@ -193,7 +193,6 @@ Shader "Jumas_Shaders/EclipseSky"
                 //return beamDistStep;
                 //Final Colors
                 //float4 fc = (skyCol + finalSuns) * (1 - stepclipSun + -0.5) ; //skyCol - stepSun + finalSuns;
-                
                 //float4 fc = (skyCol - smoothSun) + finalSuns //ADDING THIS PART ON THE RIGHT REMOVED ALIASING I NEED TO THINK OF A BETTER WAY BUT IM TOO LAZY RN + (beamDistStep - smoothSun);
 
                 float4 fc = (skyCol - smoothSun) + finalSuns + finalBeam; //(skyCol * (1-stepclipSun)) gives eclipse a feather effect  | (skyCol - stepclipSun) this gives a real eclipse effect 
