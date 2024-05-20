@@ -82,10 +82,13 @@ Shader "Unlit/ShapeNoiseTest"
                 //fixed4 col = tex2D(_MainTex, i.uv);
                 //the better solution would be to just use a texture on a plane and cut or place fake garbage far away but I dont wanna do that,
                 //I want to try the maths for a fake mountain
-                float2 uv = float2(i.uv*8);
+                float2 uv = i.uv*8;
+                float2 uvc = i.uv * 2 - 1;
             
                 float n = noiseIQ(uv) * .5 + .5;
-
+                
+                float c = length(uvc - 1);
+                return c;
                 return float4(n.xxx,1);
 
 

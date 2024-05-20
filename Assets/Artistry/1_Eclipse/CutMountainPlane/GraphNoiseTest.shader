@@ -84,7 +84,7 @@ Shader "Unlit/GraphNoiseTest"
                 //float u = fx * fx * (3.0 - 2.0 * fx); // custom cubic curve
                 //return lerp(rand(ix), rand(ix + 1.0), u);
                 
-                
+                clip(l-0.1);
 
                 return l;
 
