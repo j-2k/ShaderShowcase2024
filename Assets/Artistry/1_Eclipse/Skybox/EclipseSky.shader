@@ -171,13 +171,24 @@ Shader "Jumas_Shaders/EclipseSky"
                 //Next is to make beam smaller as it goes down, I can probably do it directly above but im struggling to do it that way, so im going to try another method below.
                 //going down skyuv.y thin the beam (beamDistStep)
 
-                float thinMask = skyUV.y*1.2;//- 0.1;
-                float beam = (thinMask + beamDistStep *  smoothstep(0.05,0.1,beamDistStep) * (sin(_Time.y)+7.75)*0.15);
-                beam = saturate(pow(beam,3)-0.04);//smoothstep(0.05,0.1,beamDistStep); this line is trash and can be better and more optimized
-                float4 finalBeam = beam * (_SunColor*1) * (1-smoothSun);
-                return beam;//remove the sky issue
-                finalBeam = smoothstep(0.1,5,finalBeam);
-                //return finalDownBeam * 1.5 - 0.6;
+                float thinMask = (skyUV.y * 0.5 + 0.5) * 1.2;       //- 0.1; * 1.2;
+                float beam = ((thinMask*2) * beamDistStep *  smoothstep(0.01,0.5,beamDistStep) * (sin(_Time.y)+7.75)*0.15);
+                //beam = saturate(pow(beam,3)-0.04);  //smoothstep(0.05,0.1,beamDistStep); this line is trash and can be better and more optimized
+                //removed the top pow down, didnt want to double pow
+                float4 finalBeam = beam * (1-smoothSun);
+                //return finalBeam;                        //fix  & remove the sky issue
+                //return 1-thinMask;
+                //thinMask = (1-thinMask) * 1.5; //remapping the thinMask to 0-2
+                //finalBeam -= 1-saturate(skyUV.y*0.5 +0.5)*1.1;
+
+                //try diff operators! finalBeam - thinMask / finalBeam * thinMask / finalBeam + thinMask
+                finalBeam = smoothstep(0,1,pow(saturate(finalBeam - thinMask - 0.2),2)) * (_SunColor*5);    //thin
+                //finalBeam = smoothstep(0,3,pow((finalBeam * thinMask),2)) * (_SunColor*5);                //fat
+                //return finalBeam;
+
+                //return pow(thinMask,2);// + - 0.5;
+
+                //return smoothstep(0.1,2,finalBeam) - (pow(thinMask,2));
 
                 //return beamDistStep;
                 //Final Colors
