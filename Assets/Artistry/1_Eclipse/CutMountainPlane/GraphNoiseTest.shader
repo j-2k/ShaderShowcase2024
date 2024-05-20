@@ -3,7 +3,7 @@ This shader is basically a over-engineered/garbage solution to making fake mount
 I only chose to do this to test my math skills, so yeah, dont actually use this trash lmao
 */
 
-Shader "Unlit/MountainFogPlaneCut"
+Shader "Unlit/GraphNoiseTest"
 {
     Properties
     {
@@ -11,7 +11,7 @@ Shader "Unlit/MountainFogPlaneCut"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
         LOD 100
 
         Pass
@@ -64,13 +64,13 @@ Shader "Unlit/MountainFogPlaneCut"
                 //I want to try the maths for a fake mountain
 
                 float2 uv = i.uv*1;
-                uv.x *= 10;
+                uv.x *= 20;
                 float4 col = 0;
                 
                
-                float l;//= step(0.5,uv.y);
-                l = (rand(floor(uv.x)));
-                
+                float l = (rand(floor(uv.x)));
+                l = smoothstep(l+0.01,l-0.01,uv.y);
+
 
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
@@ -83,6 +83,8 @@ Shader "Unlit/MountainFogPlaneCut"
                 //return lerp(rand(ix), rand(ix + 1.0), smoothstep(0.,1.,fx));
                 //float u = fx * fx * (3.0 - 2.0 * fx); // custom cubic curve
                 //return lerp(rand(ix), rand(ix + 1.0), u);
+                
+                
 
                 return l;
 
