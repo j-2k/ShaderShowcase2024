@@ -32,7 +32,7 @@ Material:
     - Scroll1: 0
     - Scroll2: 0
     - Scroll3: -1
-    - _Moffset: -0.3
+    - _Moffset: -0.01
     - _PushBot: 0.05
     - _PushTop: -0.05
     - _SSM: 0.42
@@ -40,11 +40,11 @@ Material:
     - _SkyOffset: 0
     - _SunClipSize: 0
     - _SunSize: 0.2
-    - _Toffset: -0.12
+    - _Toffset: -0.01
     m_Colors:
     - _ColorBot: {r: 0, g: 0, b: 0, a: 1}
-    - _ColorMid: {r: 0.16981131, g: 0, b: 0, a: 1}
-    - _ColorTop: {r: 0.1509434, g: 0.018867925, b: 0, a: 1}
+    - _ColorMid: {r: 0.3882353, g: 0.10980392, b: 0.06666667, a: 1}
+    - _ColorTop: {r: 0.38679248, g: 0.10951758, b: 0.06750623, a: 1}
     - _SunClipPos: {r: 0, g: 0, b: 0, a: 0}
     - _SunColor: {r: 3.5534465, g: 2.5801518, b: 0.55313087, a: 1}
     - _SunPos: {r: 0, g: 0.68, b: -0.18, a: 0}

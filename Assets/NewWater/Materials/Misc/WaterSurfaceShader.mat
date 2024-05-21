@@ -49,7 +49,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _FoamTexture:
         m_Texture: {fileID: 2800000, guid: 29eaa22502f331641b125d2d7038250b, type: 3}
-        m_Scale: {x: 0.1, y: 0.1}
+        m_Scale: {x: 0.02, y: 0.02}
         m_Offset: {x: 0, y: 0}
     - _GradientMap:
         m_Texture: {fileID: 2800000, guid: 122546bab1bd67c489d5676ed302878e, type: 3}
@@ -113,12 +113,12 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Tessellation: 10
+    - _Tessellation: 50
     - _TransparencyIntersectionThreshold: 0.2
     - _TransparencyIntersectionThresholdMax: 0.4
     - _TransparencyIntersectionThresholdMin: 0.6
     - _UVSec: 0
-    - _VectorLength: 0.005
+    - _VectorLength: 0.01
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.17123532, g: 0.9811321, b: 0.691005, a: 1}

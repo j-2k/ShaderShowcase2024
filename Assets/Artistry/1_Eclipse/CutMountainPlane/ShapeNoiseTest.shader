@@ -98,9 +98,9 @@ Shader "Unlit/ShapeNoiseTest"
                 //float c = smoothstep(0.51,0.5,length(uvc) - (n * 1)) ;// ;
                 float m = abs(uv.x - 5) - (uv.y - 0.4) * 0.3;
                 m = saturate(m);
-                float c = smoothstep(1,.05,(uv.y + 0.7) - (n * 0.4) + (1 - m) * 0.25) ;// ;
+                float c = smoothstep(1,.0,(uv.y + 0.9) - (n * 0.3) + (1 - m) * 0.2) ;// ;
                 clip(c - 0.001);
-                float4 col = c;
+                float4 col = c+ 0.1;
                 col *= _Color;
                 //return col;
                 // apply fog
