@@ -32,7 +32,7 @@ Material:
     - Scroll1: 0
     - Scroll2: 0
     - Scroll3: -1
-    - _Moffset: -0.25
+    - _Moffset: -0.07
     - _PushBot: 0.05
     - _PushTop: -0.05
     - _SSM: 0.42
@@ -40,13 +40,13 @@ Material:
     - _SkyOffset: 0
     - _SunClipSize: 0.2
     - _SunSize: 0.21
-    - _Toffset: -0.13
+    - _Toffset: -0.12
     m_Colors:
-    - _ColorBot: {r: 0.3529412, g: 0.07058824, b: 0.043137256, a: 1}
-    - _ColorMid: {r: 0.5019608, g: 0.17254898, b: 0.12941173, a: 1}
-    - _ColorTop: {r: 0.7176471, g: 0.16878581, b: 0.08962262, a: 1}
+    - _ColorBot: {r: 0.24528301, g: 0, b: 0, a: 1}
+    - _ColorMid: {r: 0.21698111, g: 0, b: 0, a: 1}
+    - _ColorTop: {r: 0.1509434, g: 0.018867925, b: 0, a: 1}
     - _SunClipPos: {r: 0, g: 0, b: 0, a: 0}
-    - _SunColor: {r: 4, g: 3.2008617, b: 0.92452836, a: 1}
+    - _SunColor: {r: 4.030425, g: 3.0655296, b: 0.32319453, a: 1}
     - _SunPos: {r: 0, g: 0.68, b: -0.18, a: 0}
     - _SunPosition: {r: 1.07, g: 1.09, b: 2.99, a: 0}
   m_BuildTextureStacks: []
