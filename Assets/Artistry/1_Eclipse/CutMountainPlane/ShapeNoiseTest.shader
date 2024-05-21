@@ -8,6 +8,8 @@ Shader "Unlit/ShapeNoiseTest"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _Color ("Color", Color) = (1,1,1,1)
+        
     }
     SubShader
     {
@@ -39,6 +41,7 @@ Shader "Unlit/ShapeNoiseTest"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _Color;
 
             v2f vert (appdata v)
             {
@@ -85,23 +88,21 @@ Shader "Unlit/ShapeNoiseTest"
                 float2 uv = i.uv;
                 uv.x *= 10;
                 
-                float2 noiseUV = uv * 10;
-                noiseUV.x -= _Time.y*0.3;
-                noiseUV.y -= _Time.y*0.1;
+                float2 noiseUV = uv * 5 + 6;
+                //noiseUV.x -= _Time.y*0.1;
+                //noiseUV.y -= _Time.y*0.1;
                 float n = noiseIQ(noiseUV) * .5 + .5;
                 
                 //float2 uvc = i.uv * 2 - 1;
                 //uvc *= 2;
                 //float c = smoothstep(0.51,0.5,length(uvc) - (n * 1)) ;// ;
-                float c = smoothstep(0.51,0.5,(uv.y + 0.2) - (n * 0.2)) ;// ;
-                clip(c-0.001);
+                float m = abs(uv.x - 5) - (uv.y - 0.4) * 0.3;
+                m = saturate(m);
+                float c = smoothstep(1,.05,(uv.y + 0.7) - (n * 0.4) + (1 - m) * 0.25) ;// ;
+                clip(c - 0.001);
                 float4 col = c;
-
-                
-                
-                
-
-
+                col *= _Color;
+                //return col;
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
