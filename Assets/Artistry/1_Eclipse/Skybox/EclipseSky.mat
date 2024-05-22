@@ -38,7 +38,7 @@ Material:
     - _SSM: 0.42
     - _SST: 0.55
     - _SkyOffset: 0
-    - _SunClipSize: 0
+    - _SunClipSize: 0.19
     - _SunSize: 0.2
     - _Toffset: -0.01
     m_Colors:
