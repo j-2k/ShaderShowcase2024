@@ -1,6 +1,7 @@
 /*
 This shader is basically a over-engineered/garbage solution to making fake mountains on a plane that is affected by fog
 I only chose to do this to test my math skills, so yeah, dont actually use this trash lmao
+and its triple pass because I wanted to make 3 fake mountains probably not a good way but its quick
 */
 
 Shader "Unlit/ShapeNoiseTest"
@@ -110,6 +111,176 @@ Shader "Unlit/ShapeNoiseTest"
 
 
 
+            }
+            ENDCG
+        }
+
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            // make fog work
+            #pragma multi_compile_fog
+
+            #include "UnityCG.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                UNITY_FOG_COORDS(1)
+                float4 vertex : SV_POSITION;
+            };
+
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            float4 _Color;
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                v.vertex.y -= 0.5;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                UNITY_TRANSFER_FOG(o,o.vertex);
+                return o;
+            }
+
+            float rand (in float2 st) {
+                return frac(sin(dot(st.xy,
+                                    float2(12.9898,78.233)))
+                            * 43758.5453123);
+            }
+
+
+
+        float2 rand2(float2 st){
+            st = float2( dot(st,float2(127.1,311.7)),
+                    dot(st,float2(269.5,183.3)) );
+            return -1.0 + 2.0*frac(sin(st)*43758.5453123);
+        }
+
+        float noiseIQ(float2 st) {
+            float2 i = floor(st);
+            float2 f = frac(st);
+
+            float2 u = f*f*(3.0-2.0*f);
+
+            return lerp( lerp( dot( rand2(i + float2(0.0,0.0) ), f - float2(0.0,0.0) ),
+                            dot( rand2(i + float2(1.0,0.0) ), f - float2(1.0,0.0) ), u.x),
+                        lerp( dot( rand2(i + float2(0.0,1.0) ), f - float2(0.0,1.0) ),
+                            dot( rand2(i + float2(1.0,1.0) ), f - float2(1.0,1.0) ), u.x), u.y);
+        }
+
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                float2 uv = i.uv;
+                uv.x *= 10;
+                
+                float2 noiseUV = uv * 8 + 32;
+                float n = noiseIQ(noiseUV) * .5 + .5;
+                
+                float m = abs(uv.x - 5) - (uv.y - 0.4) * 0.3;
+                m = saturate(m);
+                float c = smoothstep(1,.0,(uv.y + 0.7) - (n * 0.3) + (1 - m) * 0.3) ;// ;
+                clip(c - 0.001);
+                float4 col = c+ 0.1;
+                col *= _Color;
+                return col;
+
+            }
+            ENDCG
+        }
+
+                Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            // make fog work
+            #pragma multi_compile_fog
+
+            #include "UnityCG.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                UNITY_FOG_COORDS(1)
+                float4 vertex : SV_POSITION;
+            };
+
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            float4 _Color;
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                v.vertex.y -= 0.25;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                UNITY_TRANSFER_FOG(o,o.vertex);
+                return o;
+            }
+
+            float rand (in float2 st) {
+                return frac(sin(dot(st.xy,
+                                    float2(12.9898,78.233)))
+                            * 43758.5453123);
+            }
+
+
+
+        float2 rand2(float2 st){
+            st = float2( dot(st,float2(127.1,311.7)),
+                    dot(st,float2(269.5,183.3)) );
+            return -1.0 + 2.0*frac(sin(st)*43758.5453123);
+        }
+
+        float noiseIQ(float2 st) {
+            float2 i = floor(st);
+            float2 f = frac(st);
+
+            float2 u = f*f*(3.0-2.0*f);
+
+            return lerp( lerp( dot( rand2(i + float2(0.0,0.0) ), f - float2(0.0,0.0) ),
+                            dot( rand2(i + float2(1.0,0.0) ), f - float2(1.0,0.0) ), u.x),
+                        lerp( dot( rand2(i + float2(0.0,1.0) ), f - float2(0.0,1.0) ),
+                            dot( rand2(i + float2(1.0,1.0) ), f - float2(1.0,1.0) ), u.x), u.y);
+        }
+
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                float2 uv = i.uv;
+                uv.x *= 10;
+                
+                float2 noiseUV = uv * 7 + 64;
+
+                float n = noiseIQ(noiseUV) * .5 + .5;
+
+                float m = abs(uv.x - 5) - (uv.y - 0.4) * 0.3;
+                m = saturate(m);
+                float c = smoothstep(1,.0,(uv.y + 0.8) - (n * 0.3) + (1 - m) * 0.3) ;
+                clip(c - 0.001);
+                float4 col = c+ 0.1;
+                col *= _Color;
+                return col;
             }
             ENDCG
         }

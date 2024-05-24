@@ -213,7 +213,15 @@ Shader "Jumas_Shaders/EclipseSky"
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
 
-                return fc;
+
+                float rim2 = smoothstep(_SunClipSize+0.1, -0.6, worldSun);
+                float4 rimColor = _SunColor * rim2;
+                return float4(rimColor);
+
+                //return float4(rimColor,1);
+
+
+                return fc + rim2;
                 //return float4(col,1);
             }
             ENDCG
