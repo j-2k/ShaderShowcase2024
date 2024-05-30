@@ -11,6 +11,7 @@ I'll try to make this readme less messy this time since the last shadershowcase'
 
 ## Jumping into Art Piece Ideas & Reference Images!
 ![EclipseScene](https://github.com/j-2k/ShaderShowcase2024/assets/52252068/0f7a8e9f-b78c-428d-9b96-c72eb2524df7)
+Credits go to the respective author, this is the reference image of the eclipse in the popular series Berserk 1997.
 
 This is the end of the readme the only thing below is my personal notes & cheatsheet where I post code that is commonly duplicated & used in many shader scripts mainly for myself but could be useful to you also!
 
