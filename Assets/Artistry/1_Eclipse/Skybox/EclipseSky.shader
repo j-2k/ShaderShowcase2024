@@ -215,8 +215,8 @@ Shader "Jumas_Shaders/EclipseSky"
 
 
                 float rim2 = smoothstep(_SunClipSize+0.1, -0.6, worldSun);
-                float4 rimColor = _SunColor * rim2;
-                return float4(rimColor);
+                //float4 rimColor = _SunColor * rim2;
+                //return float4(rimColor);
 
                 //return float4(rimColor,1);
 
