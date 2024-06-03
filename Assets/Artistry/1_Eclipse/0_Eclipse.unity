@@ -2733,7 +2733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 273d361619af0024aab6647cc8fd68fd, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 273d361619af0024aab6647cc8fd68fd, type: 3}
       propertyPath: m_StaticEditorFlags
