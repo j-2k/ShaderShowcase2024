@@ -10,6 +10,7 @@ Shader "Unlit/CloudsUL"
     {
         Tags { "RenderType"="Opaque" "Queue"="Geometry" }
         LOD 100
+        //Cull Off
 
         Pass
         {
@@ -54,6 +55,7 @@ Shader "Unlit/CloudsUL"
 
             #define PI 3.1415926535897932384626433832795
             #define TWO_PI 6.283185307179586476925286766559
+            #define MARCH_SIZE 0.06
             #define MAX_DIST 1000.0
             #define MIN_DIST 0.01
 
@@ -65,16 +67,20 @@ Shader "Unlit/CloudsUL"
             {   
                 float3 sp = _SpherePos.xyz;
                 float dSphere = length(pos - (sp)) - _SpherePos.w;
-                float dPlane = pos.y - _PlanePos.y;
-
+                /*float dPlane = pos.y - _PlanePos.y;
                 float distanceToScene = min(dSphere, dPlane);
-                return distanceToScene;
+                return distanceToScene;*/
+                return dSphere;
             }
 
+            /*
             float RayMarch (float3 rayOrigin, float3 rayDirection, uint maxSteps)
             {
                 float dO = 0.0; //Distance from Origin
                 float dS = 0.0; //Distance from Scene
+
+                float3 col = float3(0,0,0);
+
                 for (uint i = 0; i < maxSteps; i++)
                 {
                     float3 p = rayOrigin + rayDirection * dO;             // standard point calculation dO is the offset for direction or magnitude
@@ -85,17 +91,51 @@ Shader "Unlit/CloudsUL"
                 
                 return dO;
             }
+            */
+
+            float4 CloudMarch(float3 rayOrigin, float3 rayDirection, uint maxSteps)
+            {
+                float depth = 0.0;
+                float3 p = rayOrigin + rayDirection * depth;             // standard point calculation dO is the offset for direction or magnitude
+
+                float4 cols = float4(0,0,0,0);
+
+                for (uint i = 0; i < maxSteps; i++)
+                {
+                    float dist = GetDistance(p);                             
+                    
+                    if(dist < 0) //if dist < 0 were inside the object in the negative regions
+                    {
+                        float4 color = float4(lerp(float3(1.0,1.0,1.0), float3(0.0, 0.0, 0.0), dist), dist );
+                        color.rgb *= color.a;
+                        cols += color * (1.0 - cols.a);
+                    }
+
+                    depth += MARCH_SIZE;
+                    p = rayOrigin + rayDirection * depth;
+                }
+                return cols;
+            }
 
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 uv = i.uv;
                 float2 cuv = i.uv * 2 - 1;
-                float3 camPos = float3(0,0,0);//i.camPos;
-                float3 camDir = normalize(float3(cuv.xy,1));
+                float3 camPos = float3(0,0,5);//i.camPos;
+                float3 camDir = normalize(float3(cuv.xy,-1));
 
-                float rm = RayMarch(camPos,camDir,50);
+                //Cloud RM
+                float3 color = float3(0,0,0);
+                float4 cm = CloudMarch(camPos,camDir,50);
+                color = cm.rgb;
+                return float4(color,1.0);
+
+                /*
+                float rm = CloudMarch(camPos,camDir,50);
                 float3 p = camPos + camDir * rm;
-                return rm*0.1;
+                float fc = 1 - rm * 0.1;
+                //clip (fc -0.01);
+                return fc;*/
                 //return float4(p,1);
                 
                 //return float4(uv,0,1);
