@@ -8,7 +8,7 @@ Shader "Unlit/CloudsUL"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+        Tags { "RenderType"="Opaque" "Queue"="Transparent" }
         LOD 100
         //Cull Off
 
@@ -55,7 +55,7 @@ Shader "Unlit/CloudsUL"
 
             #define PI 3.1415926535897932384626433832795
             #define TWO_PI 6.283185307179586476925286766559
-            #define MARCH_SIZE 0.06
+            #define MARCH_SIZE 0.07
             #define MAX_DIST 1000.0
             #define MIN_DIST 0.01
 
@@ -94,7 +94,7 @@ Shader "Unlit/CloudsUL"
                 f = f * f * (3. - 2. * f);
 
                 float2 uv = (p.xy + float2(37.0, 239.0) * p.z) + f.xy;
-                float2 tex = tex2D(_MainTex,(uv + 0.5) / 256.0).yx;
+                float2 tex = tex2D(_MainTex,float2((uv + 0.5) / 256.0)).yx;
 
                 return lerp( tex.x, tex.y, f.z ) * 2.0 - 1.0;
             }
@@ -128,13 +128,13 @@ Shader "Unlit/CloudsUL"
                 return distanceToScene;*/
 
                 float f = fbm(pos);
-                return -dSphere;// + f;
+                return -dSphere + f;
             }
 
             float4 CloudMarch(float3 rayOrigin, float3 rayDirection, uint maxSteps)
             {
                 float depth = 0.0;
-                float3 p = rayOrigin + rayDirection * depth;             // standard point calculation dO is the offset for direction or magnitude
+                float3 p = rayOrigin + depth * rayDirection;             // standard point calculation dO is the offset for direction or magnitude
 
                 float4 cols = float4(0,0,0,0);
 
@@ -150,7 +150,7 @@ Shader "Unlit/CloudsUL"
                     }
 
                     depth += MARCH_SIZE;
-                    p = rayOrigin + rayDirection * depth;
+                    p = rayOrigin + depth * rayDirection;
                 }
                 return cols;
             }
