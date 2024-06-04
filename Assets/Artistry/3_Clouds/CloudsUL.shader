@@ -63,15 +63,7 @@ Shader "Unlit/CloudsUL"
                 return length(p) - radius;
             }
 
-            float GetDistance(float3 pos)
-            {   
-                float3 sp = _SpherePos.xyz;
-                float dSphere = length(pos - (sp)) - _SpherePos.w;
-                /*float dPlane = pos.y - _PlanePos.y;
-                float distanceToScene = min(dSphere, dPlane);
-                return distanceToScene;*/
-                return dSphere;
-            }
+
 
             /*
             float RayMarch (float3 rayOrigin, float3 rayDirection, uint maxSteps)
@@ -93,6 +85,52 @@ Shader "Unlit/CloudsUL"
             }
             */
 
+
+
+            float noise(float3 x ) 
+            {
+                float3 p = floor(x);
+                float3 f = frac(x);
+                f = f * f * (3. - 2. * f);
+
+                float2 uv = (p.xy + float2(37.0, 239.0) * p.z) + f.xy;
+                float2 tex = tex2D(_MainTex,(uv + 0.5) / 256.0).yx;
+
+                return lerp( tex.x, tex.y, f.z ) * 2.0 - 1.0;
+            }
+
+            float fbm(float3 p) 
+            {
+            float3 q = p + _Time.y * 0.5 * float3(1.0, -0.2, -1.0);
+            float g = noise(q);
+
+            float f = 0.0;
+            float scale = 0.5;
+            float factor = 2.02;
+
+            for (int i = 0; i < 6; i++) {
+                f += scale * noise(q);
+                q *= factor;
+                factor += 0.21;
+                scale *= 0.5;
+            }
+
+            return f;
+            }
+
+
+            float GetDistance(float3 pos)
+            {   
+                float3 sp = _SpherePos.xyz;
+                float dSphere = length(pos - (sp)) - _SpherePos.w;
+                /*float dPlane = pos.y - _PlanePos.y;
+                float distanceToScene = min(dSphere, dPlane);
+                return distanceToScene;*/
+
+                float f = fbm(pos);
+                return -dSphere;// + f;
+            }
+
             float4 CloudMarch(float3 rayOrigin, float3 rayDirection, uint maxSteps)
             {
                 float depth = 0.0;
@@ -104,7 +142,7 @@ Shader "Unlit/CloudsUL"
                 {
                     float dist = GetDistance(p);                             
                     
-                    if(dist < 0) //if dist < 0 were inside the object in the negative regions
+                    if(dist > 0)
                     {
                         float4 color = float4(lerp(float3(1.0,1.0,1.0), float3(0.0, 0.0, 0.0), dist), dist );
                         color.rgb *= color.a;
@@ -121,13 +159,14 @@ Shader "Unlit/CloudsUL"
             {
                 float2 uv = i.uv;
                 float2 cuv = i.uv * 2 - 1;
-                float3 camPos = float3(0,0,5);//i.camPos;
-                float3 camDir = normalize(float3(cuv.xy,-1));
+                float3 camPos = float3(0,0,0);//i.camPos;
+                float3 camDir = normalize(float3(cuv.xy,1));
 
                 //Cloud RM
                 float3 color = float3(0,0,0);
-                float4 cm = CloudMarch(camPos,camDir,50);
+                float4 cm = CloudMarch(camPos,camDir,100);
                 color = cm.rgb;
+                
                 return float4(color,1.0);
 
                 /*
