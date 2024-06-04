@@ -10,6 +10,7 @@ Shader "Unlit/CloudsUL"
     {
         Tags { "RenderType"="Opaque" "Queue"="Transparent" }
         LOD 100
+        Blend SrcAlpha OneMinusSrcAlpha
         //Cull Off
 
         Pass
@@ -184,8 +185,9 @@ Shader "Unlit/CloudsUL"
                 float3 color = float3(0,0,0);
                 float4 cm = CloudMarch(camPos,camDir,100);
                 color = cm.rgb;
-                clip(color -0.1);
-                return float4(color,1.0);
+                //clip(color -0.1);
+                //return float4(color,1.0);
+                return float4(color,cm.a);
 
                 /*
                 float rm = CloudMarch(camPos,camDir,50);
