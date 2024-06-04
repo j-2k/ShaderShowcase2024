@@ -34,6 +34,7 @@ Shader "Unlit/CloudsUL"
                 //UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
                 float3 camPos : TEXCOORD1;
+                float3 hitPos : TEXCOORD2;
             };
 
             sampler2D _MainTex;
@@ -45,10 +46,13 @@ Shader "Unlit/CloudsUL"
             v2f vert (appdata v)
             {
                 v2f o;
-                o.camPos = _WorldSpaceCameraPos;
+
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
+
+                o.camPos = mul(unity_ObjectToWorld, float4(_WorldSpaceCameraPos,1));
+                o.hitPos = v.vertex;
                 
                 return o;
             }
@@ -127,6 +131,9 @@ Shader "Unlit/CloudsUL"
                 float distanceToScene = min(dSphere, dPlane);
                 return distanceToScene;*/
 
+                //float f = fbm(pos);
+                //return -dSphere;// + f;
+
                 float f = fbm(pos);
                 return -dSphere + f;
             }
@@ -148,6 +155,10 @@ Shader "Unlit/CloudsUL"
                         color.rgb *= color.a;
                         cols += color * (1.0 - cols.a);
                     }
+                    /*else
+                    {
+                        discard;
+                    }*/
 
                     depth += MARCH_SIZE;
                     p = rayOrigin + depth * rayDirection;
@@ -158,15 +169,22 @@ Shader "Unlit/CloudsUL"
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 uv = i.uv;
-                float2 cuv = i.uv * 2 - 1;
+                float2 cuv = i.uv - 0.5;
+                /*// flat 2d coordinate system
                 float3 camPos = float3(0,0,0);//i.camPos;
                 float3 camDir = normalize(float3(cuv.xy,1));
+                */
+                
+                //Swapping to 3D coordinate system
+                float3 camPos = i.camPos;
+                float3 camDir = normalize(i.hitPos - camPos);
+            
 
                 //Cloud RM
                 float3 color = float3(0,0,0);
                 float4 cm = CloudMarch(camPos,camDir,100);
                 color = cm.rgb;
-                
+                clip(color -0.1);
                 return float4(color,1.0);
 
                 /*
