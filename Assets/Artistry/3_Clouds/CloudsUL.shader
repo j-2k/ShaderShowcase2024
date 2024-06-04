@@ -90,6 +90,11 @@ Shader "Unlit/CloudsUL"
             }
             */
 
+            float rand (in float2 st) {
+                return frac(sin(dot(st.xy,
+                                    float2(12.9898,78.233)))
+                            * 43758.5453123);
+            }
 
 
             float noise(float3 x ) 
@@ -169,6 +174,7 @@ Shader "Unlit/CloudsUL"
 
             fixed4 frag (v2f i) : SV_Target
             {
+                //return rand(i.uv);
                 float2 uv = i.uv;
                 float2 cuv = i.uv - 0.5;
                 /*// flat 2d coordinate system
