@@ -1,16 +1,17 @@
-Shader "Unlit/CloudsUL"
+Shader "Unlit/Clouds3DUL"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _3DCloudTex ("3D Texture", 3D) = "white" {}
         _SpherePos("Sphere Position", Vector) = (0,1,8,1)
         _PlanePos("Plane Position", Vector) = (0,0,0,1)
     }
     SubShader
     {
-        Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
-        Blend One OneMinusSrcAlpha
+        Tags { "RenderType"="Opaque" "Queue"="Transparent" }
         LOD 100
+        Blend SrcAlpha OneMinusSrcAlpha
         //Cull Off
 
         Pass
@@ -36,10 +37,14 @@ Shader "Unlit/CloudsUL"
                 float4 vertex : SV_POSITION;
                 float3 camPos : TEXCOORD1;
                 float3 hitPos : TEXCOORD2;
+
             };
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+
+            sampler3D _3DCloudTex;
+            float4 _3DCloudTex_ST;
 
             float4 _SpherePos;
             float4 _PlanePos;
@@ -64,38 +69,9 @@ Shader "Unlit/CloudsUL"
             #define MAX_DIST 1000.0
             #define MIN_DIST 0.01
 
-            float sdSphere(float3 p, float radius) {
-                return length(p) - radius;
-            }
+            float sdSphere(float3 p, float radius) {return length(p) - radius;}
 
-
-
-            /*
-            float RayMarch (float3 rayOrigin, float3 rayDirection, uint maxSteps)
-            {
-                float dO = 0.0; //Distance from Origin
-                float dS = 0.0; //Distance from Scene
-
-                float3 col = float3(0,0,0);
-
-                for (uint i = 0; i < maxSteps; i++)
-                {
-                    float3 p = rayOrigin + rayDirection * dO;             // standard point calculation dO is the offset for direction or magnitude
-                    dS = GetDistance(p);                             
-                    dO += dS;
-                    if (dS < MIN_DIST|| dO > MAX_DIST) break;            // if we are close enough to the surface or too far away, break
-                }
-                
-                return dO;
-            }
-            */
-
-            float rand (in float2 st) {
-                return frac(sin(dot(st.xy,
-                                    float2(12.9898,78.233)))
-                            * 43758.5453123);
-            }
-
+            float rand (in float2 st) {return frac(sin(dot(st.xy,float2(12.9898,78.233)))* 43758.5453123);}
 
             float noise(float3 x ) 
             {
@@ -144,6 +120,7 @@ Shader "Unlit/CloudsUL"
                 return -dSphere + f;
             }
 
+            /*
             float4 CloudMarch(float3 rayOrigin, float3 rayDirection, uint maxSteps)
             {
                 float depth = 0.0;
@@ -164,13 +141,17 @@ Shader "Unlit/CloudsUL"
                     /*else
                     {
                         discard;
-                    }*/
+                    } *//*
 
-                    depth += MARCH_SIZE;
+                    float density3D = tex3D(_3DCloudTex, p).r;
+                    depth += MARCH_SIZE + density3D;
                     p = rayOrigin + depth * rayDirection;
                 }
                 return cols;
             }
+            */
+
+
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -189,7 +170,8 @@ Shader "Unlit/CloudsUL"
 
                 //Cloud RM
                 float3 color = float3(0,0,0);
-                float4 cm = CloudMarch(camPos,camDir,100);
+
+                float4 cm = 0;//CloudMarch3D(camPos,camDir,25);
                 color = cm.rgb;
                 //clip(color -0.1);
                 //return float4(color,1.0);
