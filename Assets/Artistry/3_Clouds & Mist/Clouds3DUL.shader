@@ -4,14 +4,15 @@ Shader "Unlit/Clouds3DUL"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _3DCloudTex ("3D Texture", 3D) = "white" {}
+        _3DCloudOffset("3D Texture Offset", Vector) = (0,0,0,0)
         _SpherePos("Sphere Position", Vector) = (0,1,8,1)
         _PlanePos("Plane Position", Vector) = (0,0,0,1)
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Transparent" }
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
         LOD 100
-        Blend SrcAlpha OneMinusSrcAlpha
+        Blend One OneMinusSrcAlpha
         //Cull Off
 
         Pass
@@ -48,6 +49,7 @@ Shader "Unlit/Clouds3DUL"
 
             float4 _SpherePos;
             float4 _PlanePos;
+            float4 _3DCloudOffset;
 
             v2f vert (appdata v)
             {
@@ -85,17 +87,33 @@ Shader "Unlit/Clouds3DUL"
                 return lerp( tex.x, tex.y, f.z ) * 2.0 - 1.0;
             }
 
+            float noise3D( float3 x )
+            {
+                int3 i = int3(floor(x));
+                float3 f = frac(x);
+                f = f*f*(3.0-2.0*f);
+                
+                return lerp(lerp(lerp( rand(i+int3(0,0,0)), 
+                                    rand(i+int3(1,0,0)),f.x),
+                            lerp( rand(i+int3(0,1,0)), 
+                                    rand(i+int3(1,1,0)),f.x),f.y),
+                        lerp(lerp( rand(i+int3(0,0,1)), 
+                                    rand(i+int3(1,0,1)),f.x),
+                            lerp( rand(i+int3(0,1,1)), 
+                                    rand(i+int3(1,1,1)),f.x),f.y),f.z);
+            }
+
             float fbm(float3 p) 
             {
             float3 q = p + _Time.y * 0.5 * float3(1.0, -0.2, -1.0);
-            float g = noise(q);
+            float g = noise3D(q);//using noise(q) insted of noise3D will give you 2d-like noise
 
             float f = 0.0;
             float scale = 0.5;
             float factor = 2.02;
 
-            for (int i = 0; i < 6; i++) {
-                f += scale * noise(q);
+            for (int i = 0; i < 4; i++) {
+                f += scale * noise3D(q);//using noise(q) insted of noise3D will give you 2d-like noise
                 q *= factor;
                 factor += 0.21;
                 scale *= 0.5;
@@ -152,6 +170,36 @@ Shader "Unlit/Clouds3DUL"
             */
 
 
+            float raymarchv1(float3 ro, float3 rd, float steps, float stepsize, float densityScale, float4 sphere)
+            {
+                float density = 0;
+                for (int i = 0; i<steps; i++)
+                {
+                    ro += rd * stepsize;
+                    float sphereSDF = distance(ro, sphere.xyz);
+                    if(sphereSDF < sphere.w){
+                        density += 0.1;
+                    }
+                }
+
+                return float(density * densityScale);
+            }
+
+            float raymarchv2(float3 ro, float3 rd, float steps, float stepsize, float densityScale, sampler3D _3DCloudTex, float3 offset)
+            {
+                float density = 0;
+                float transmission = 0;
+                for (int i = 0; i<steps; i++)
+                {
+                    ro += rd * stepsize;
+
+                    float sampDensity = tex3D(_3DCloudTex, ro + offset  - (fbm(ro) * 0.1) ).r ;    
+                    density += sampDensity ;
+                }
+
+                return float(density * densityScale);
+            }
+
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -169,13 +217,12 @@ Shader "Unlit/Clouds3DUL"
             
 
                 //Cloud RM
-                float3 color = float3(0,0,0);
+                float3 color = float3(1,1,1);
 
-                float4 cm = 0;//CloudMarch3D(camPos,camDir,25);
-                color = cm.rgb;
-                //clip(color -0.1);
-                //return float4(color,1.0);
-                return float4(color,cm.a);
+                //float4 cm = raymarchv2(camPos,camDir,64,0.02,0.2,_SpherePos);//CloudMarch3D(camPos,camDir,25);
+                float4 cm = raymarchv2(camPos,camDir,128,0.02,0.03,_3DCloudTex,_3DCloudOffset);
+
+                return float4(cm.rgb,cm.a);
 
                 /*
                 float rm = CloudMarch(camPos,camDir,50);

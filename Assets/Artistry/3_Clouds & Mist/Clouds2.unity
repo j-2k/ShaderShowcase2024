@@ -230,7 +230,7 @@ GameObject:
   - component: {fileID: 1495914413}
   - component: {fileID: 1495914412}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Clouds Sampling 3D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -408,7 +408,7 @@ Transform:
   m_GameObject: {fileID: 1537460323}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -3}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -427,7 +427,7 @@ GameObject:
   - component: {fileID: 1811292906}
   - component: {fileID: 1811292905}
   m_Layer: 0
-  m_Name: Cube (2)
+  m_Name: FBM Clouds Sampling 3D SLOW
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -532,7 +532,7 @@ GameObject:
   - component: {fileID: 2008488984}
   - component: {fileID: 2008488983}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Normals Volumetric 3D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
